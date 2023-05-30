@@ -48,7 +48,7 @@ app.get("/api/thumbnails", async (req, res) => {
 // using axios to fetch character  data from API with specified url
 async function fetchDataFromAPI() {
   const response = await axios.get(
-    "https://friends.fandom.com/api/v1/Articles/List?expand=1&abstract=1000&category=Characters&limit=20"
+    "https://friends.fandom.com/api/v1/Articles/List?expand=1&abstract=500&category=Characters&limit=500"
   );
   return response.data.items;
 }

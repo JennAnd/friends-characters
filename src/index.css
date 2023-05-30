@@ -1,13 +1,254 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-color: #1a1a1a;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* --------CharacterViewer.js--------*/
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.game-title {
+  color: #ffffffab;
+  font-family: "Trade Gothic Bold Condensed";
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 20px;
+  flex-grow: 1;
+  margin-left: 16%;
+}
+
+.game-rules {
+  background-color: transparent;
+  color: #ffffffab;
+  font-family: "Helvetica Condensed";
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 9%;
+}
+
+.game-rules:hover {
+  color: #ffffffc7;
+}
+
+.character-box {
+  background-color: #1a1a1a;
+  border: none;
+  border-radius: 4px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-left: 10%;
+  margin-bottom: 10%;
+  margin-right: 10%;
+  margin-top: 4%;
+  filter: blur(0);
+}
+
+.character-box.popup-open {
+  filter: blur(5px);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1;
+  display: none;
+}
+
+.overlay.overlay-visible {
+  display: block;
+}
+
+.character-box::before,
+.character-box::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.character-box::before {
+  top: 5px;
+  left: 5px;
+}
+
+.character-box::after {
+  bottom: 5px;
+  right: 5px;
+}
+
+.image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  margin-top: 14px;
+  margin-bottom: 10px;
+  display: block;
+  border: 1px solid #ffffffc7;
+  border-radius: 2px;
+}
+
+.next-button {
+  background-color: #dc8400;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: "Trade Gothic Bold Condensed";
+  align-self: flex-end;
+  margin-top: -45px;
+}
+
+.next-button:hover {
+  background-color: #db8f1e;
+}
+
+.title {
+  color: #dc8400;
+  font-size: 26px;
+  font-family: "Trade Gothic Bold Condensed";
+}
+
+.abstract {
+  color: rgba(245, 245, 245, 0.879);
+  font-family: "Helvetica Condensed";
+  line-height: 26px;
+  letter-spacing: 0.54px;
+}
+
+.spinner-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* --------CharacterViewer.js--------*/
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 10px solid #ff9900;
+  border-top: 10px solid #ffffff;
+  border-radius: 50%;
+  animation: spinner 1.5s linear infinite;
+}
+
+/* --------GameInstructions.js--------*/
+.game-instructions-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  max-width: 400px;
+  background-color: #1a1a1a;
+  border: none;
+  border-radius: 4px;
+  padding: 20px;
+  color: rgba(245, 245, 245, 0.879);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.overlay {
+  transition: opacity 0.3s ease;
+}
+
+.overlay.overlay-visible {
+  opacity: 1;
+}
+
+.game-instructions-popup::before,
+.game-instructions-popup::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.game-instructions-popup::before {
+  top: 5px;
+  left: 5px;
+}
+
+.game-instructions-popup::after {
+  bottom: 5px;
+  right: 5px;
+}
+
+.game-instructions-text {
+  font-size: 13px;
+  margin-bottom: 20px;
+  font-family: "Helvetica Condensed";
+  line-height: 26px;
+  letter-spacing: 0.45px;
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 16px;
+  cursor: pointer;
+  color: #dc8400;
+  font-family: "Helvetica Condensed";
+}
+
+.popup-close:hover {
+  color: #e09d38;
+}
+
+/* --------InputForm.js--------*/
+.submit-guess {
+  background-color: #dc8400;
+  color: #ffffff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: "Trade Gothic Bold Condensed";
+}
+
+.submit-guess:hover {
+  background-color: #db8f1e;
+}
+
+form {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 1100px) {
+  .game-title {
+    margin-left: 18%;
+  }
+}
+@media (max-width: 950px) {
+  .game-title {
+    margin-left: 20%;
+  }
 }
