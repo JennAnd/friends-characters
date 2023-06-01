@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./fonts.css";
-import "./index.css";
+import "./styles/fonts.css";
+import "./styles/characterviewer.css";
+import "./styles/index.css";
 import LoadingSpinner from "./LoadingSpinner";
 import GameInstructions from "./GameInstructions";
+import InputForm from "./InputForm";
 
 function CharacterViewer() {
   const [showInstructions, setShowInstructions] = useState(false);
@@ -13,17 +15,55 @@ function CharacterViewer() {
   const [currentCharacterIndex, setCurrentCharacterIndex] = useState(
     parseInt(localStorage.getItem("currentCharacterIndex")) || 0
   );
+  const [guessedTitle, setGuessedTitle] = useState("");
+  const [hiddenWords, setHiddenWords] = useState([]);
 
   const handleShowInstructions = () => {
     setShowInstructions(true);
   };
+
   const handleCloseInstructions = () => {
     setShowInstructions(false);
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    const titleWords = currentCharacter?.title?.split(" ");
+
+    setHiddenWords(
+      titleWords?.map((word) => ({
+        word,
+        isHidden: !guessedTitle.toLowerCase().includes(word.toLowerCase()),
+      })) || []
+    );
+  }, [currentCharacter?.title, guessedTitle]);
+
+  const handleGuess = (wordIndices, wordGuess) => {
+    const newHiddenWords = [...hiddenWords];
+
+    wordIndices.forEach((wordIndex) => {
+      const hiddenWord = newHiddenWords[wordIndex];
+
+      if (
+        hiddenWord &&
+        wordGuess.toLowerCase() === hiddenWord.word.toLowerCase()
+      ) {
+        hiddenWord.isHidden = false;
+      }
+    });
+
+    setHiddenWords(newHiddenWords);
+
+    // Check if all words have been correctly guessed
+    const isAllWordsGuessed = newHiddenWords.every(
+      (hiddenWord) => !hiddenWord.isHidden
+    );
+    if (isAllWordsGuessed) {
+      setGuessedTitle("");
+    }
+
+    if (isAllWordsGuessed) {
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -32,10 +72,20 @@ function CharacterViewer() {
           Accept: "application/json",
         },
       });
-      const charactersWithThumbnail = response.data.filter(
-        (character) => character.thumbnail !== null && character.id !== 19359
+      const charactersWithThumbnailAndAbstract = response.data.filter(
+        (character) =>
+          character.thumbnail !== null &&
+          character.abstract !== null &&
+          character.abstract.length >= 100 &&
+          character.id !== 19359 &&
+          3398 &&
+          1901
+        //"id": 9223,
       );
-      const randomizedCharacters = shuffleArray(charactersWithThumbnail);
+
+      const randomizedCharacters = shuffleArray(
+        charactersWithThumbnailAndAbstract
+      );
       setCharacters(randomizedCharacters);
 
       const storedIndex = localStorage.getItem("currentCharacterIndex");
@@ -46,21 +96,6 @@ function CharacterViewer() {
       console.error("Error fetching data:", error);
     }
   };
-
-  useEffect(() => {
-    if (currentCharacterIndex !== null && characters.length > 0) {
-      setCurrentCharacter(characters[currentCharacterIndex]);
-      fetchThumbnail(characters[currentCharacterIndex]);
-    }
-  }, [characters, currentCharacterIndex]);
-
-  useEffect(() => {
-    // Store the current character index in localStorage
-    localStorage.setItem(
-      "currentCharacterIndex",
-      currentCharacterIndex.toString()
-    );
-  }, [currentCharacterIndex]);
 
   const fetchThumbnail = async (character) => {
     try {
@@ -103,19 +138,101 @@ function CharacterViewer() {
     return truncatedText.replace(/\s+\S*$/, "...");
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (currentCharacterIndex !== null && characters.length > 0) {
+      setCurrentCharacter(characters[currentCharacterIndex]);
+      fetchThumbnail(characters[currentCharacterIndex]);
+    }
+  }, [characters, currentCharacterIndex]);
+
+  useEffect(() => {
+    const fetchCharacterData = async () => {
+      if (currentCharacter !== null) {
+        await fetchThumbnail(currentCharacter);
+      }
+    };
+
+    fetchCharacterData();
+  }, [currentCharacter]);
+
+  useEffect(() => {
+    // Store the current character index in localStorage
+    localStorage.setItem(
+      "currentCharacterIndex",
+      currentCharacterIndex.toString()
+    );
+  }, [currentCharacterIndex]);
+
   return (
     <div>
+      <div className="input-container">
+        <div className="input-box">
+          <InputForm onGuess={handleGuess} hiddenWords={hiddenWords} />
+        </div>
+      </div>
       <div className="container">
-        <h1 className="game-title">'Friends' Characters </h1>
+        <h1 className="game-title">'Friends' Characters</h1>
         <button className="game-rules" onClick={handleShowInstructions}>
           How to play
         </button>
       </div>
-
       {currentCharacter !== null ? (
         <div className="character-box" key={currentCharacter.id}>
-          {/*           <div className="overlay"> */}
-          <h2 className="title">{currentCharacter.title}</h2>
+          <div className="title-box">
+            <h2
+              className={`title ${
+                hiddenWords.every((hiddenWord) => hiddenWord.isHidden)
+                  ? ""
+                  : "guessed"
+              }`}
+            >
+              {hiddenWords.map((hiddenWord, index) => (
+                <div
+                  key={index}
+                  className={`box ${hiddenWord.isHidden ? "hidden" : ""}`}
+                  title={`${hiddenWord.word.length} characters`}
+                  style={{
+                    backgroundColor: hiddenWord.isHidden
+                      ? "#dc8400"
+                      : "inherit",
+                    display: "inline-block",
+                    marginRight: "5px",
+                    marginBottom: "5px",
+                    paddingRight: "5px",
+                    border: "1px",
+                    borderRadius: "2px",
+                  }}
+                >
+                  <span
+                    className={`box-content ${
+                      hiddenWord.isHidden ? "hidden" : ""
+                    }`}
+                    style={{
+                      visibility: hiddenWord.isHidden ? "hidden" : "visible",
+                      color: "#dc8400",
+                      fontSize: "26px",
+                      fontFamily: "Trade Gothic Bold Condensed",
+                    }}
+                  >
+                    {hiddenWord.isHidden ? (
+                      <input
+                        type="text"
+                        value=""
+                        onChange={(e) => handleGuess(index, e.target.value)}
+                      />
+                    ) : (
+                      hiddenWord.word
+                    )}
+                  </span>
+                </div>
+              ))}
+            </h2>
+          </div>
+
           <p className="abstract">
             {truncateText(currentCharacter.abstract, 499)}
           </p>
@@ -126,7 +243,6 @@ function CharacterViewer() {
               alt={currentCharacter.title}
             />
           )}
-          {/*     </div> */}
           {showInstructions && (
             <GameInstructions onClose={handleCloseInstructions} />
           )}
@@ -144,13 +260,3 @@ function CharacterViewer() {
 }
 
 export default CharacterViewer;
-
-//fixa styling på allt bakom popupen med overlay
-//Vill lägga till också if no abstract !::null som med thumbnail
-
-/* i want to handle character.abstract the same way as thumbnail: */
-/*    const charactersWithThumbnail = response.data.filter(
-    (character) => character.thumbnail !== null && character.id !== 19359
-    );
-    const randomizedCharacters = shuffleArray(charactersWithThumbnail);
-    setCharacters(randomizedCharacters); */

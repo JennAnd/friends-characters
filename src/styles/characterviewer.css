@@ -1,7 +1,3 @@
-body {
-  background-color: #1a1a1a;
-}
-
 /* --------CharacterViewer.js--------*/
 .container {
   display: flex;
@@ -117,12 +113,6 @@ body {
   background-color: #db8f1e;
 }
 
-.title {
-  color: #dc8400;
-  font-size: 26px;
-  font-family: "Trade Gothic Bold Condensed";
-}
-
 .abstract {
   color: rgba(245, 245, 245, 0.879);
   font-family: "Helvetica Condensed";
@@ -141,105 +131,6 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 1;
-}
-
-/* --------CharacterViewer.js--------*/
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 10px solid #ff9900;
-  border-top: 10px solid #ffffff;
-  border-radius: 50%;
-  animation: spinner 1.5s linear infinite;
-}
-
-/* --------GameInstructions.js--------*/
-.game-instructions-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  max-width: 400px;
-  background-color: #1a1a1a;
-  border: none;
-  border-radius: 4px;
-  padding: 20px;
-  color: rgba(245, 245, 245, 0.879);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.overlay {
-  transition: opacity 0.3s ease;
-}
-
-.overlay.overlay-visible {
-  opacity: 1;
-}
-
-.game-instructions-popup::before,
-.game-instructions-popup::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  border-radius: 4px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-.game-instructions-popup::before {
-  top: 5px;
-  left: 5px;
-}
-
-.game-instructions-popup::after {
-  bottom: 5px;
-  right: 5px;
-}
-
-.game-instructions-text {
-  font-size: 13px;
-  margin-bottom: 20px;
-  font-family: "Helvetica Condensed";
-  line-height: 26px;
-  letter-spacing: 0.45px;
-}
-
-.popup-close {
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: 16px;
-  cursor: pointer;
-  color: #dc8400;
-  font-family: "Helvetica Condensed";
-}
-
-.popup-close:hover {
-  color: #e09d38;
-}
-
-/* --------InputForm.js--------*/
-.submit-guess {
-  background-color: #dc8400;
-  color: #ffffff;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 2px;
-  cursor: pointer;
-  font-family: "Trade Gothic Bold Condensed";
-}
-
-.submit-guess:hover {
-  background-color: #db8f1e;
-}
-
-form {
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 40px;
 }
 
 @media (max-width: 1100px) {
